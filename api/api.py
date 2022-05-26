@@ -1,5 +1,6 @@
 import time
-from flask import Flask
+from urllib import request
+from flask import Flask, request
 
 app = Flask(__name__)
 
@@ -10,10 +11,11 @@ from keras.layers import Dense, Activation, Dropout
 # from keras.optimizers import SGD
 import random
 import nltk
+nltk.download('punkt')
 from nltk.stem import WordNetLemmatizer
 lemmatizer = WordNetLemmatizer()
 import json
-import pickle
+# import pickle
 import tensorflow as tf
 
 words=[]
@@ -90,7 +92,8 @@ m = ""
 
 @app.route('/api/postMessage', methods=["POST"])
 def postMessage():
-    m = input("User : ")
+    # m = input("User : ")
+    m = request.json['data']
     print(m)
 
 @app.route('/api/getReply', methods=["GET"])

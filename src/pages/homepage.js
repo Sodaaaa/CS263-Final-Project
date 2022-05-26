@@ -23,6 +23,13 @@ export default class homepage extends Component {
     console.log(message)
 
     axios
+      .post("/api/postMessage")
+      .then((res, message) => {
+        console.log(res)
+      });
+
+
+    axios
       .get("/api/getReply")
       .then((res) => {
         console.log(res);
@@ -73,7 +80,7 @@ export default class homepage extends Component {
         isOpen={true}
       />
       <div>
-       <button type="button" class="btn btn-info btn-song">Get Song Recommendations</button>
+       <button type="button" class="btn btn-primary btn-song">Start Song Recommendations</button>
       </div>
     </div>
     )
