@@ -31,9 +31,15 @@ $ python -m venv venv
 $ venv\Scripts\activate
 ```
 
-To install the dependencies, run:
+Now you should be in the virtual environment. To install the dependencies, run:
 ```
-pip install flask python-dotenv
+pip install flask python-dotenv numpy nltk tensorflow
+```
+
+Inside the api folder, create a file named .flaskenv and write the following:
+```
+FLASK_APP=api.py
+FLASK_ENV=development
 ```
 
 ## Launch Website
