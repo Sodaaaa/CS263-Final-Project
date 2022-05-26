@@ -33,7 +33,7 @@ $ venv\Scripts\activate
 
 To install the dependencies, run:
 ```
-pip install flask
+pip install flask python-dotenv
 ```
 
 ## Launch Website
