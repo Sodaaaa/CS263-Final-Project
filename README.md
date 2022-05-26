@@ -19,13 +19,17 @@ Navigate into the api folder.
 
 If you're on Mac, run the following:
 
+```
 $ python3 -m venv venv
 $ source venv/bin/activate
+```
 
 If you're on Windows, run the following:
 
+```
 $ python -m venv venv
 $ venv\Scripts\activate
+```
 
 To install the dependencies, run:
 ```
