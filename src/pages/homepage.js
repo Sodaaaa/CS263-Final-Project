@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // import { Layout, Row, Col, Button } from "antd/lib";
 // import { SmallDashOutlined } from "@ant-design/icons";
-// import "./homepage.css";
+import "./homepage.css";
 // import MenuBar from "../../components/MenuBar/MenuBar";
 // import HotTopicCard from "../../components/HotTopicCard/HotTopicCard";
 import axios from "axios";
@@ -17,17 +17,33 @@ export default class homepage extends Component {
     };
   }
 
+
+
   _onMessageWasSent(message) {
     console.log(message)
-    const reply = {
-      author: 'bot',
-      type: 'text',
-      data: {text: 'Copy that.'}
-    }
 
-    this.setState({
-      messageList: [...this.state.messageList, message, reply]
-    })
+    axios
+      .get("/api/getReply")
+      .then((res) => {
+        console.log(res);
+        const reply = {
+          author: 'bot',
+          type: 'text',
+          data: {text: res.data}
+        }
+        this.setState({
+          messageList: [...this.state.messageList, message, reply]
+        })
+        // this.populateList(res, questionList, optionList);
+        // this.setState({
+        //   listData: questionList,
+        //   optionListData: optionList,
+        //   listPopulated: true,
+        // });
+        //this.onTriggerCallBack();
+      });
+
+    
   }
 
   _sendMessage(text) {
@@ -56,7 +72,11 @@ export default class homepage extends Component {
         showEmoji
         isOpen={true}
       />
-    </div>)
+      <div>
+       <button type="button" class="btn btn-info btn-song">Get Song Recommendations</button>
+      </div>
+    </div>
+    )
   }
 }
 //   constructor(props) {
