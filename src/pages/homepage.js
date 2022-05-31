@@ -23,8 +23,8 @@ export default class homepage extends Component {
     console.log(message)
 
     axios
-      .post("/api/postMessage")
-      .then((res, message) => {
+      .post("/api/postMessage", message)
+      .then((res) => {
         console.log(res)
       });
 
@@ -66,12 +66,28 @@ export default class homepage extends Component {
     }
   }
 
+  _recommendSong() {
+    axios
+      .get("/api/getSong")
+      .then((res) => {
+        console.log(res);
+        const reply = {
+          author: 'bot',
+          type: 'text',
+          data: {text: res.data}
+        }
+        this.setState({
+          messageList: [...this.state.messageList, reply]
+        })
+      });
+  }
+
   render() {
-    console.log("hi")
+    console.log(this.state.messageList)
     return (<div>
       <Launcher
         agentProfile={{
-          teamName: 'react-chat-window',
+          teamName: 'Chat With Me',
           imageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png'
         }}
         onMessageWasSent={this._onMessageWasSent.bind(this)}
@@ -80,7 +96,13 @@ export default class homepage extends Component {
         isOpen={true}
       />
       <div>
-       <button type="button" class="btn btn-primary btn-song">Start Song Recommendations</button>
+        <button 
+        onClick={this._recommendSong.bind(this)} 
+        messageList={this.state.messageList}
+        type="button" 
+        class="btn btn-primary btn-song">
+          Start Song Recommendations
+        </button>
       </div>
     </div>
     )
