@@ -5,6 +5,7 @@ from flask import Flask, request
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 import json
+from pysentimiento import create_analyzer
 from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson.natural_language_understanding_v1 import Features, ClassificationsOptions
@@ -98,15 +99,19 @@ def responsed(msg1):
 
 
 def song_emotion():
-    authenticator = IAMAuthenticator("5zrGexf4mX0e9LUaxkWB6KLD9ThFWYisj9g-0HAQGuVJ")
-    tone_analyzer = NaturalLanguageUnderstandingV1(
-        version='2022-04-07',
-        authenticator=authenticator)
+    emotion_analyzer = create_analyzer(task="emotion", lang="en")
+
+    # IBM Tone Analyzer
+    # authenticator = IAMAuthenticator("5zrGexf4mX0e9LUaxkWB6KLD9ThFWYisj9g-0HAQGuVJ")
+    # tone_analyzer = NaturalLanguageUnderstandingV1(
+    #     version='2022-04-07',
+    #     authenticator=authenticator)
     
-    tone_analyzer.set_service_url("https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/4a200f59-699a-4421-afde-5b9af5c06fd7")
+    # tone_analyzer.set_service_url("https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/4a200f59-699a-4421-afde-5b9af5c06fd7")
     # text = ""
     # for i in msg:
     #     text = text+i
+
     len1 = len(msg)
     message = ""
     for i in range(5):
@@ -114,11 +119,14 @@ def song_emotion():
             message = message+ " " + msg[len1-1-i]
         else:
             break
-    tone_analysis = tone_analyzer.analyze(text=message,
-                                          features=Features(classifications=ClassificationsOptions(model='tone-classifications-en-v1'))).get_result()
+    # tone_analysis = tone_analyzer.analyze(text=message,
+                                        #   features=Features(classifications=ClassificationsOptions(model='tone-classifications-en-v1'))).get_result()
 
     dic1 = dict()
-    emotion=tone_analysis["classifications"][0]["class_name"]
+    # emotion=tone_analysis["classifications"][0]["class_name"]
+    print("===========",emotion_analyzer.predict(message))
+    emotion = emotion_analyzer.predict(message).output
+    print(emotion)
     dic1['emotion'] = emotion
     import requests
 
@@ -131,8 +139,8 @@ def song_emotion():
     return dic1
 
 
-tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-medium")
-model_GPT = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-medium")
+# tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-medium")
+# model_GPT = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-medium")
 
 m = ""
 bot_input_ids = None
@@ -141,43 +149,43 @@ new_user_input_ids = None
 
 @app.route('/api/postMessage', methods=["POST"])
 def postMessage():
-    # # Sequential
-    # global msg
-    # # m = input("User : ")
-    # m = request.json['data']['text']
-    # msg.append(m)
-    # print(m)
-    # return
-
-    # DialogGPT
-    global m
+    # Sequential
+    global msg
+    # m = input("User : ")
     m = request.json['data']['text']
     msg.append(m)
+    print(m)
     return
+
+    # DialogGPT
+    # global m
+    # m = request.json['data']['text']
+    # msg.append(m)
+    # return
 
 @app.route('/api/getReply', methods=["GET"])
 def getReply():
-    # # Sequential 
-    # res = responsed(m)
-    # print("Chatbot : "+res)
-    # return res
-
-    # DialogGPT
-    global bot_input_ids
-    global chat_history_ids
-    global new_user_input_ids
-    global m
-    print(m)
-    new_user_input_ids = tokenizer.encode(m+ tokenizer.eos_token, return_tensors='pt')
-    # if bot_input_ids == None:
-    bot_input_ids = new_user_input_ids
-    # else:
-        # bot_input_ids = torch.cat([chat_history_ids, new_user_input_ids], dim=-1)
-    chat_history_ids = model_GPT.generate(bot_input_ids, max_length=1000, pad_token_id=tokenizer.eos_token_id)
-    print("DialoGPT: {}".format(tokenizer.decode(chat_history_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)))
-    res = tokenizer.decode(chat_history_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)
-    print(res)
+    # Sequential 
+    res = responsed(m)
+    print("Chatbot : "+res)
     return res
+
+    # # DialogGPT
+    # global bot_input_ids
+    # global chat_history_ids
+    # global new_user_input_ids
+    # global m
+    # print(m)
+    # new_user_input_ids = tokenizer.encode(m+ tokenizer.eos_token, return_tensors='pt')
+    # # if bot_input_ids == None:
+    # bot_input_ids = new_user_input_ids
+    # # else:
+    #     # bot_input_ids = torch.cat([chat_history_ids, new_user_input_ids], dim=-1)
+    # chat_history_ids = model_GPT.generate(bot_input_ids, max_length=1000, pad_token_id=tokenizer.eos_token_id)
+    # print("DialoGPT: {}".format(tokenizer.decode(chat_history_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)))
+    # res = tokenizer.decode(chat_history_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)
+    # print(res)
+    # return res
 
 @app.route('/api/getSong', methods=["GET"])
 def getSong():
