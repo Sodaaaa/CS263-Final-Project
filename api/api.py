@@ -115,7 +115,7 @@ def song_emotion():
     len1 = len(msg)
     message = ""
     for i in range(5):
-        if len1-i>=0:
+        if len1-1-i>=0:
             message = message+ " " + msg[len1-1-i]
         else:
             break
@@ -124,6 +124,7 @@ def song_emotion():
 
     dic1 = dict()
     # emotion=tone_analysis["classifications"][0]["class_name"]
+    print(message)
     print("===========",emotion_analyzer.predict(message))
     emotion = emotion_analyzer.predict(message).output
     print(emotion)
@@ -154,7 +155,6 @@ def postMessage():
     # m = input("User : ")
     m = request.json['data']['text']
     msg.append(m)
-    print(m)
     return
 
     # DialogGPT
