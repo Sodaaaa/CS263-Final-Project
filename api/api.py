@@ -192,9 +192,10 @@ def getSong():
     # Sequential 
     ans = song_emotion()
     print("Emotion : "+ans['emotion'])
+    res = "I guess your are in the mood of "+ans['emotion']+" now.\n"
+    res += "Here are the songs I recommend for you, hope you like them.\n\n"
     ans.pop('emotion')
     lst = list(ans.keys())
-    res = ""
     for i in range(5):
         res += "Song_name : "+lst[i] + ", Song_URL : " + ans[lst[i]] + "\n"
     print(res)
