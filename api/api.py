@@ -48,11 +48,14 @@ def preprocess(text):
 
 task='emotion'
 MODEL = f"cardiffnlp/twitter-roberta-base-{task}"
-tokenizer = AutoTokenizer.from_pretrained(MODEL)
+
+tokenizer_emotion = AutoTokenizer.from_pretrained("cardiffnlp/twitter-roberta-base-emotion")
+
+# model = AutoModelForSequenceClassification.from_pretrained("cardiffnlp/twitter-roberta-base-emotion")
 
 # TF
-model = TFAutoModelForSequenceClassification.from_pretrained(MODEL)
-model.save_pretrained(MODEL)
+model_emotion = TFAutoModelForSequenceClassification.from_pretrained(MODEL)
+# model.save_pretrained(MODEL)
 
 # download label mapping
 mapping_link = f"https://raw.githubusercontent.com/cardiffnlp/tweeteval/main/datasets/{task}/mapping.txt"
@@ -135,7 +138,8 @@ def responsed(msg1):
 
 def song_emotion():
 
-    emotion_analyzer = create_analyzer(task="emotion", lang="en")
+    # # Robertuito-Emotion-Analysis
+    # emotion_analyzer = create_analyzer(task="emotion", lang="en")
 
     # IBM Tone Analyzer
     # authenticator = IAMAuthenticator("5zrGexf4mX0e9LUaxkWB6KLD9ThFWYisj9g-0HAQGuVJ")
@@ -160,8 +164,8 @@ def song_emotion():
 
   
     text = preprocess(message)
-    encoded_input = tokenizer(text, return_tensors='tf')
-    output = model(encoded_input)
+    encoded_input = tokenizer_emotion(text, return_tensors='tf')
+    output = model_emotion(encoded_input)
     scores = output[0][0].numpy()
     scores = softmax(scores)
 
@@ -175,8 +179,9 @@ def song_emotion():
     dic1 = dict()
     # emotion=tone_analysis["classifications"][0]["class_name"]
     print(message)
-    print("===========",emotion_analyzer.predict(message))
-    emotion = emotion_analyzer.predict(message).output
+    # print("===========",emotion_analyzer.predict(message))
+    # emotion = emotion_analyzer.predict(message).output
+    emotion = labels[ranking[0]]
     print(emotion)
     dic1['emotion'] = emotion
     import requests
