@@ -33,7 +33,7 @@ $ venv\Scripts\activate
 
 Now you should be in the virtual environment. To install the dependencies, run:
 ```
-pip install flask python-dotenv numpy nltk tensorflow
+pip install flask python-dotenv numpy nltk tensorflow torch transformers pysentimiento ibm_watson
 ```
 
 Inside the api folder, create a file named .flaskenv and write the following:
@@ -63,5 +63,3 @@ You can interact with the frontend by webpage with our local database api/data.d
 In the api directory, you could run 'python test.py' and see the 13 unittest for backend in the 
 terminal.
 
-## Video Demo
-https://youtu.be/7ozEroid4Zs
